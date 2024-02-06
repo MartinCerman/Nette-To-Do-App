@@ -1,0 +1,5 @@
+{block content}
+
+<p>Opravdu smazat úlohu {$task->name}?</p>
+{control deleteTaskForm}
+<a n:href="Task:edit $task->id">Zpět</a>

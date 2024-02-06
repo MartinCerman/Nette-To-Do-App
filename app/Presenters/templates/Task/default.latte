@@ -1,0 +1,24 @@
+{block content}
+<table>
+    <tr>
+        <td><b>Id:</b></td>
+        <td>{$task->id}</td>
+    </tr>
+    <tr>
+        <td><b>Název:</b></td>
+        <td>{$task->name}</td>
+    </tr>
+    <tr>
+        <td><b>Popis:</b></td>
+        <td>{$task->description}</td>
+    </tr>
+    <tr>
+        <td><b>Splněno:</b></td>
+        <td>{$task->isCompleted ? 'ANO' : 'NE'}</td>
+    </tr>
+    <tr>
+        <td><b>Čas vložení:</b></td>
+        <td>{$task->insertionDate|date:'d.m.Y G:i'}</td>
+    </tr>
+</table>
+<a n:href="Home:">Zpět</a>
