@@ -6,6 +6,7 @@ namespace App\Presenters;
 
 use App\Models\TasksRepository;
 use http\Exception\BadQueryStringException;
+use Nette\Application\Attributes\Parameter;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
@@ -21,6 +22,9 @@ use Tracy\OutputDebugger;
  */
 class TaskPresenter extends Presenter
 {
+    #[Parameter]
+    public int $taskId;
+
     public function __construct(private TasksRepository $tasksRepository)
     {
         parent::__construct();
@@ -29,10 +33,6 @@ class TaskPresenter extends Presenter
     protected function beforeRender(): void
     {
         $taskId = $this->getParameter('taskId');
-
-        if (!$taskId || !is_numeric($taskId)) {
-            $this->error("Required parameter taskId of type 'int' not found, '{$taskId}' given.");
-        }
 
         $this->loadTask((int)$taskId) ?:
             $this->error("Task id $taskId not found.");
@@ -58,10 +58,6 @@ class TaskPresenter extends Presenter
 
     public function renderDefault(int $taskId): void
     {
-    }
-
-    public function actionDefault(int $taskId){
-
     }
 
     public function renderEdit(int $taskId): void
