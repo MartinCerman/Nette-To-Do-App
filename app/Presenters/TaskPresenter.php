@@ -37,7 +37,6 @@ class TaskPresenter extends Presenter
     public function loadState(array $params): void
     {
         parent::loadState($params);
-
         $taskId = (int)$params['taskId'];
 
         $this->loadTask($taskId) ?:
