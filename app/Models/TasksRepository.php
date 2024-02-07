@@ -6,6 +6,9 @@ use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 
+/**
+ * @property-read TasksTemplate $template
+ */
 class TasksRepository
 {
     public function __construct(private Explorer $database)
