@@ -7,6 +7,7 @@ namespace App\Presenters;
 use App\Models\TasksRepository;
 use http\Exception\BadQueryStringException;
 use Nette\Application\Attributes\Parameter;
+use Nette\Application\Attributes\Persistent;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
@@ -22,7 +23,7 @@ use Tracy\OutputDebugger;
  */
 class TaskPresenter extends Presenter
 {
-    #[Parameter]
+    #[Persistent]
     public int $taskId;
 
     public function __construct(private TasksRepository $tasksRepository)
