@@ -31,11 +31,13 @@ class TaskPresenter extends Presenter
         parent::__construct();
     }
 
-    protected function beforeRender(): void
+    public function loadState(array $params): void
     {
-        $taskId = $this->getParameter('taskId');
+        parent::loadState($params);
 
-        $this->loadTask((int)$taskId) ?:
+        $taskId = (int)$params['taskId'];
+
+        $this->loadTask($taskId) ?:
             $this->error("Task id $taskId not found.");
     }
 
