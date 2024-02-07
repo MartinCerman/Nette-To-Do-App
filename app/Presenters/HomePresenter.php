@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App\Models\TasksRepository;
+use App\Models\TasksTemplate;
 use Nette\Application\UI\Form;
 use Nette;
 
-
+/** @property-read TasksTemplate $template */
 final class HomePresenter extends Nette\Application\UI\Presenter
 {
     public function __construct(private TasksRepository $tasksRepository)
@@ -18,7 +19,7 @@ final class HomePresenter extends Nette\Application\UI\Presenter
 
     public function renderDefault(): void
     {
-        $this->template->tasks = $this->tasksRepository->getAll();
+        $this->template->tasks = $this->tasksRepository->getAll()->fetchAll();
     }
 
     protected function createComponentInsertTaskForm(): Form {

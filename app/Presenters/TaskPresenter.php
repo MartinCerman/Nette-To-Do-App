@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App\Models\TasksRepository;
+use App\Models\TasksTemplate;
 use http\Exception\BadQueryStringException;
 use Nette\Application\Attributes\Parameter;
 use Nette\Application\Attributes\Persistent;
@@ -20,6 +21,8 @@ use Tracy\OutputDebugger;
  *
  *  Task is represented by its $taskId (int) passed in query string, if it's not
  *  provided, not found or in an incorrect format, an exception is thrown.
+ *
+ * @property-read TasksTemplate $template
  */
 class TaskPresenter extends Presenter
 {
