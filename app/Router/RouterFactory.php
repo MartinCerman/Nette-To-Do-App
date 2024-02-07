@@ -6,6 +6,7 @@ namespace App\Router;
 
 use Nette;
 use Nette\Application\Routers\RouteList;
+use Nette\Routing\Route;
 
 
 final class RouterFactory
@@ -15,8 +16,23 @@ final class RouterFactory
     public static function createRouter(): RouteList
     {
         $router = new RouteList;
-        $router->addRoute('task/<taskId \d+>[/<action>]', 'Task:default')
-            ->addRoute('', 'Home:default');
+        $router->addRoute('<presenter>[/<taskId \d+>[/<action>]]', [
+                'presenter' => [
+                    Route::Value => 'Home',
+                    Route::FilterTable => [
+                        'uloha' => 'Task'
+                    ],
+                ],
+                'action' => [
+                    Route::Value => 'default',
+                    Route::FilterTable => [
+                        'upravit' => 'edit',
+                        'smazat' => 'delete'
+                    ]
+                ]
+            ]
+        );
+
         return $router;
     }
 }
