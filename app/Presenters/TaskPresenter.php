@@ -88,7 +88,7 @@ class TaskPresenter extends Presenter
         $form->addTextArea('description', 'Popis')
             ->setHtmlAttribute('placeholder', 'Popis');
 
-        $form->addCheckbox('isCompleted', 'Splňeno');
+        $form->addCheckbox('isCompleted', 'Splněno');
 
         $form->addSubmit('submit', 'Uložit');
         $form->onSuccess[] = $this->editTaskFormSucceeded(...);

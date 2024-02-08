@@ -8,13 +8,23 @@ use Nette\Database\Table\Selection;
 
 class TasksRepository
 {
+    public const GET_ACTIVE = 0;
+    public const GET_COMPLETED = 1;
+    public const GET_ALL = 2;
+
     public function __construct(private Explorer $database)
     {
     }
 
-    public function getAll(): Selection
+    public function getAll(int $filterTasks = self::GET_ALL): Selection
     {
-        return $this->database->table('tasks');
+        $tasks = $this->database->table('tasks');
+
+        if($filterTasks !== self::GET_ALL){
+            $tasks->where('isCompleted', $filterTasks);
+        }
+
+        return $tasks;
     }
 
     public function addTask($name, $description): void
