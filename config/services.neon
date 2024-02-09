@@ -4,6 +4,7 @@ parameters:
 
 services:
 	- App\Router\RouterFactory::createRouter
+	- App\Models\FileRepository(uploadsDir: %uploadsDir%)
 
 
 search:
