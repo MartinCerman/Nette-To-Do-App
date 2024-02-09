@@ -8,6 +8,7 @@ use Nette\Database\Explorer;
 use Nette\Http\FileUpload;
 use Nette\InvalidStateException;
 use Nette\IOException;
+use Nette\Utils\FileInfo;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 
@@ -38,10 +39,10 @@ class UploadsRepository
     }
 
     /**
-     * Returns a path to a file from $folder within default $uploadsDir or null
+     * Returns FileInfo of a file from $folder within default $uploadsDir or null
      * if the folder is empty or does not exist.
      */
-    public function findFile(string $folder): ?string
+    public function findFile(string $folder): ?FileInfo
     {
         try {
             $files = Finder::find()
@@ -49,7 +50,7 @@ class UploadsRepository
                 ->collect();
 
             if ($files) {
-                return $files[0]->getPathname();
+                return $files[0];
             }
             return null;
         } catch (InvalidStateException) {
