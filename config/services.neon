@@ -1,6 +1,11 @@
-services:
-	- App\Router\RouterFactory::createRouter
+parameters:
+    uploadsDir: %appDir%\data\uploads
 
+
+services:
+    - App\Router\RouterFactory::createRouter
+    - App\Models\UploadsRepository(uploadsDir: %uploadsDir%)
+    - App\Factories\TasksTableControlFactory
 
 search:
 	-	in: %appDir%

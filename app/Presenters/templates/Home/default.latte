@@ -3,33 +3,26 @@
     Všechny úlohy
 {/block}
 {block content}
-<table class="task-list">
-    <thead>
-    <tr>
-        <th>Úloha</th>
-        <th>Popis</th>
-        <th>Splněno</th>
-        <th>Čas vložení</th>
-    </tr>
-    </thead>
-    <tbody>
+<div class="taskList">
+    {if $tasks['active']}
+        <h2>Aktivní úlohy</h2>
+        {control tasksTable $tasks['active']}
+    {/if}
 
-    <tr n:foreach="$tasks as $task">
-        <td>{$task->name}</td>
-        <td>{$task->description|truncate: 30}</td>
-        <td>{$task->isCompleted ? 'ANO' : 'NE'}</td>
-        <td>{$task->insertionDate|date:'d.m.Y G:i'}</td>
-        <td><a n:href="Task: $task->id">detail</a> / <a n:href="Task:edit $task->id">editovat</a></td>
-    </tr>
     <form n:name="insertTaskForm">
-        <tr>
-            <td colspan="5"><p></p></td>
-        </tr>
-        <tr>
-            <td>Přidat novou úlohu: <br><input n:name="name"></td>
-            <td colspan="3"><textarea rows="1" cols="50" n:name="description"></textarea></td>
-            <td><input n:name="submit"></td>
-        </tr>
+        <table>
+            <tbody>
+            <tr>
+                <td>Přidat novou úlohu: <br><input n:name="name"></td>
+                <td><textarea rows="2" n:name="description"></textarea></td>
+                <td><input n:name="upload"></td>
+                <td><input n:name="submit"></td>
+            </tr>
+            </tbody>
+        </table>
     </form>
-    </tbody>
-</table>
+
+    <h2>Splněné úlohy</h2>
+    {control tasksTable $tasks['completed']}
+</div>
+

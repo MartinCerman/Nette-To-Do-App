@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
+use App\Components\TaskForm;
 use App\Models\TasksRepository;
 use App\Models\TasksTemplate;
+use App\Models\UploadsRepository;
 use http\Exception\BadQueryStringException;
 use Nette\Application\Attributes\Parameter;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\BadRequestException;
+use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Database\Table\ActiveRow;
@@ -29,7 +32,10 @@ class TaskPresenter extends Presenter
     #[Persistent]
     public int $taskId;
 
-    public function __construct(private TasksRepository $tasksRepository)
+    public function __construct(
+        private TasksRepository   $tasksRepository,
+        private UploadsRepository $uploadsRepository,
+    )
     {
         parent::__construct();
     }
@@ -37,7 +43,6 @@ class TaskPresenter extends Presenter
     public function loadState(array $params): void
     {
         parent::loadState($params);
-
         $taskId = (int)$params['taskId'];
 
         $this->loadTask($taskId) ?:
@@ -78,20 +83,9 @@ class TaskPresenter extends Presenter
             ->setDefaults($this->template->task);
     }
 
-    public function createComponentEditTaskForm(): Form
+    public function createComponentEditTaskForm(): TaskForm
     {
-        $form = new Form();
-
-        $form->addText('name', 'Název úlohy')
-            ->setRequired('Musíte zadat alespoň název úlohy.')
-            ->setHtmlAttribute('placeholder', 'Název');
-
-        $form->addTextArea('description', 'Popis')
-            ->setHtmlAttribute('placeholder', 'Popis');
-
-        $form->addCheckbox('isCompleted', 'Splňeno');
-
-        $form->addSubmit('submit', 'Uložit');
+        $form = new TaskForm();
         $form->onSuccess[] = $this->editTaskFormSucceeded(...);
 
         return $form;
@@ -109,18 +103,39 @@ class TaskPresenter extends Presenter
         return $form;
     }
 
-    public function editTaskFormSucceeded(Form $form, array $task): void
+    public function editTaskFormSucceeded(Form $form, $data): void
     {
-        $task['id'] = $this->getParameter('taskId');
+        $task = [
+            'id' => $this->taskId,
+            'name' => $data->name,
+            'description' => $data->description,
+            'isCompleted' => $data->isCompleted
+        ];
+
         $this->tasksRepository->updateTask($task);
+
+        if ($data->upload->hasFile()) {
+            $this->uploadsRepository->addFile((string)$this->taskId, $data->upload);
+        }
+
         $this->flashMessage("Úloha s názvem {$task['name']} byla upravena.");
         $this->redirect('Home:');
     }
 
+    /**
+     * Removes a task and its associated folder.
+     */
     public function deleteTaskFormSucceeded(Form $form, $task): void
     {
         $this->tasksRepository->removeTask((int)$task['id']);
+        $this->uploadsRepository->deleteFolder($task['id']);
+
         $this->flashMessage('Úloha byla smazána.');
         $this->redirect('Home:');
+    }
+
+    public function actionDownloadAttachment(int $taskId){
+        $file = $this->uploadsRepository->findFile((string)$taskId);
+        $this->sendResponse(new FileResponse($file->getPathname()));
     }
 }
