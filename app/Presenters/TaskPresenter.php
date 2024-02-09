@@ -12,6 +12,7 @@ use http\Exception\BadQueryStringException;
 use Nette\Application\Attributes\Parameter;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\BadRequestException;
+use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Database\Table\ActiveRow;
@@ -131,5 +132,10 @@ class TaskPresenter extends Presenter
 
         $this->flashMessage('Úloha byla smazána.');
         $this->redirect('Home:');
+    }
+
+    public function actionDownloadAttachment(int $taskId){
+        $file = $this->uploadsRepository->findFile((string)$taskId);
+        $this->sendResponse(new FileResponse($file->getPathname()));
     }
 }
