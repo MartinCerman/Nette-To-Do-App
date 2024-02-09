@@ -5,6 +5,7 @@
         <th>Úloha</th>
         <th>Popis</th>
         <th>Čas vložení</th>
+        <th>Příloha</th>
     </tr>
     </thead>
     <tbody>
@@ -12,6 +13,11 @@
         <td>{$task->name}</td>
         <td>{$task->description|truncate: 30}</td>
         <td>{$task->insertionDate|date:'j.n.Y G:i'}</td>
+        <td>
+            {if $fileName = $control->getTaskFile($task->id)}
+                <a href="{plink Task:DownloadAttachment $task->id}">{$fileName}</a>
+            {/if}
+        </td>
         <td>
             <a href="{plink Task: $task->id}">detail</a> / <a href="{plink Task:edit $task->id}">editovat</a>
         </td>
