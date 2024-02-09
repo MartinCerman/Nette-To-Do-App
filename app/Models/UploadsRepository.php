@@ -29,4 +29,9 @@ class UploadsRepository
 
         FileSystem::copy($file->temporaryFile, $taskFolder . DIRECTORY_SEPARATOR . $file->name);
     }
+
+    public function deleteFolder(string $folder): void
+    {
+        FileSystem::delete($this->uploadsDir . DIRECTORY_SEPARATOR . $folder);
+    }
 }
