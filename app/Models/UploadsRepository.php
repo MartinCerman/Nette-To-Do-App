@@ -12,8 +12,7 @@ use Nette\Utils\Finder;
 class UploadsRepository
 {
     public function __construct(
-        private Explorer $database,
-        private string   $uploadsDir
+        private string $uploadsDir
     )
     {
     }

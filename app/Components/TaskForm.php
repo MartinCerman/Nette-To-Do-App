@@ -26,7 +26,7 @@ class TaskForm extends Form
         $this->addTextArea('description', 'Popis')
             ->addRule(
                 Forms\Form::MAX_LENGTH,
-                'Název nesmí být delší než 1000 znaků.',
+                'Popis nesmí být delší než 1000 znaků.',
                 1000
             )
             ->setHtmlAttribute('placeholder', 'Popis');
