@@ -6,6 +6,8 @@ namespace App\Models;
 
 use Nette\Database\Explorer;
 use Nette\Http\FileUpload;
+use Nette\InvalidStateException;
+use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 
@@ -33,5 +35,25 @@ class UploadsRepository
     public function deleteFolder(string $folder): void
     {
         FileSystem::delete($this->uploadsDir . DIRECTORY_SEPARATOR . $folder);
+    }
+
+    /**
+     * Returns a path to a file from $folder within default $uploadsDir or null
+     * if the folder is empty or does not exist.
+     */
+    public function findFile(string $folder): ?string
+    {
+        try {
+            $files = Finder::find()
+                ->in($this->uploadsDir . DIRECTORY_SEPARATOR . $folder)
+                ->collect();
+
+            if ($files) {
+                return $files[0]->getPathname();
+            }
+            return null;
+        } catch (InvalidStateException) {
+            return null;
+        }
     }
 }
