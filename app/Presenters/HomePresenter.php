@@ -6,6 +6,7 @@ namespace App\Presenters;
 
 use App\Components\TaskForm;
 use App\Components\TasksTableControl;
+use App\Factories\TasksTableControlFactory;
 use App\Models\Task;
 use App\Models\TasksRepository;
 use App\Models\TasksTemplate;
@@ -18,7 +19,8 @@ final class HomePresenter extends Nette\Application\UI\Presenter
 {
     public function __construct(
         private TasksRepository   $tasksRepository,
-        private UploadsRepository $uploadsRepository
+        private UploadsRepository $uploadsRepository,
+        private TasksTableControlFactory $tasksTableControlFactory,
     )
     {
         parent::__construct();
@@ -26,7 +28,7 @@ final class HomePresenter extends Nette\Application\UI\Presenter
 
     public function createComponentTasksTable(): TasksTableControl
     {
-        return new TasksTableControl();
+        return $this->tasksTableControlFactory->create();
     }
 
     public function renderDefault(): void
