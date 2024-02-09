@@ -8,13 +8,17 @@ use App\Components\TasksTableControl;
 use App\Models\Task;
 use App\Models\TasksRepository;
 use App\Models\TasksTemplate;
+use App\Models\UploadsRepository;
 use Nette\Application\UI\Form;
 use Nette;
 
 /** @property-read TasksTemplate $template */
 final class HomePresenter extends Nette\Application\UI\Presenter
 {
-    public function __construct(private TasksRepository $tasksRepository)
+    public function __construct(
+        private TasksRepository $tasksRepository,
+        private UploadsRepository $uploadsRepository,
+    )
     {
         parent::__construct();
     }
