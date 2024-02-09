@@ -6,6 +6,7 @@ namespace App\Presenters;
 
 use App\Models\TasksRepository;
 use App\Models\TasksTemplate;
+use App\Models\UploadsRepository;
 use http\Exception\BadQueryStringException;
 use Nette\Application\Attributes\Parameter;
 use Nette\Application\Attributes\Persistent;
@@ -29,7 +30,10 @@ class TaskPresenter extends Presenter
     #[Persistent]
     public int $taskId;
 
-    public function __construct(private TasksRepository $tasksRepository)
+    public function __construct(
+        private TasksRepository   $tasksRepository,
+        private UploadsRepository $uploadsRepository,
+    )
     {
         parent::__construct();
     }
@@ -116,9 +120,14 @@ class TaskPresenter extends Presenter
         $this->redirect('Home:');
     }
 
+    /**
+     * Removes a task and its associated folder.
+     */
     public function deleteTaskFormSucceeded(Form $form, $task): void
     {
         $this->tasksRepository->removeTask((int)$task['id']);
+        $this->uploadsRepository->deleteFolder($task['id']);
+        
         $this->flashMessage('Úloha byla smazána.');
         $this->redirect('Home:');
     }
