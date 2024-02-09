@@ -33,12 +33,13 @@ class TaskForm extends Form
 
         $this->addCheckbox('isCompleted', 'Splněno');
 
-        $this->addSubmit('submit', 'Uložit');
-        $this->addUpload('upload')
+        $this->addUpload('upload', 'Příloha')
             ->addRule(
                 Forms\Form::MAX_FILE_SIZE,
                 'Soubor je moc velký, maximální velikost souboru je 5 MB.',
                 5 * 1024 * 1024
             );
+
+        $this->addSubmit('submit', 'Uložit');
     }
 }
