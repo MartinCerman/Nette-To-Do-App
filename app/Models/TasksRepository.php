@@ -22,20 +22,22 @@ class TasksRepository
     {
         $tasks = $this->database->table('tasks');
 
-        if($filterTasks !== self::GET_ALL){
+        if ($filterTasks !== self::GET_ALL) {
             $tasks->where('isCompleted', $filterTasks);
         }
 
         return $tasks;
     }
 
-    public function addTask($name, $description): void
+    public function addTask($name, $description): int
     {
-        $this->database->table('tasks')
+        $insertedRow = $this->database->table('tasks')
             ->insert([
                 'name' => $name,
                 'description' => $description
             ]);
+
+        return $insertedRow->id;
     }
 
     public function getById(int $taskId): ?ActiveRow
