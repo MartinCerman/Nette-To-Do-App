@@ -14,14 +14,14 @@ use Nette;
 /** @property-read TasksTemplate $template */
 final class HomePresenter extends Nette\Application\UI\Presenter
 {
-    public function createComponentTasksTable(): TasksTableControl
-    {
-        return new TasksTableControl();
-    }
-
     public function __construct(private TasksRepository $tasksRepository)
     {
         parent::__construct();
+    }
+
+    public function createComponentTasksTable(): TasksTableControl
+    {
+        return new TasksTableControl();
     }
 
     public function renderDefault(): void
