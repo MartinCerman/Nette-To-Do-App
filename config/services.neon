@@ -3,9 +3,9 @@ parameters:
 
 
 services:
-	- App\Router\RouterFactory::createRouter
-	- App\Models\UploadsRepository(uploadsDir: %uploadsDir%)
-
+    - App\Router\RouterFactory::createRouter
+    - App\Models\UploadsRepository(uploadsDir: %uploadsDir%)
+    - App\Factories\TasksTableControlFactory
 
 search:
 	-	in: %appDir%
