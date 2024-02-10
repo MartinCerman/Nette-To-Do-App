@@ -133,9 +133,4 @@ class TaskPresenter extends Presenter
         $this->flashMessage('Úloha byla smazána.');
         $this->redirect('Home:');
     }
-
-    public function actionDownloadAttachment(int $taskId){
-        $file = $this->uploadsRepository->findFile((string)$taskId);
-        $this->sendResponse(new FileResponse($file->getPathname()));
-    }
 }
