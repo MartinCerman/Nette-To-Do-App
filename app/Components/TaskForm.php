@@ -10,6 +10,18 @@ use Nette\Forms;
 
 class TaskForm extends Form
 {
+    private const ACCEPTED_TYPES = [
+        'image/bmp',
+        'image/gif',
+        'image/jpeg',
+        'image/png',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.ms-excel',
+        'text/plain',
+        'text/csv',
+    ];
+
     public function __construct()
     {
         parent::__construct();
@@ -34,6 +46,11 @@ class TaskForm extends Form
         $this->addCheckbox('isCompleted', 'Splněno');
 
         $this->addUpload('upload', 'Příloha')
+            ->addRule(
+                Forms\Form::MIME_TYPE,
+                'Soubor není v požadovaném formátu.',
+                self::ACCEPTED_TYPES
+            )
             ->addRule(
                 Forms\Form::MAX_FILE_SIZE,
                 'Soubor je moc velký, maximální velikost souboru je 5 MB.',
