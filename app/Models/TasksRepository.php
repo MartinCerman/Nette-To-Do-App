@@ -10,19 +10,15 @@ use Nette\Database\Table\Selection;
 
 class TasksRepository
 {
-    public const GET_ACTIVE = 0;
-    public const GET_COMPLETED = 1;
-    public const GET_ALL = 2;
-
     public function __construct(private Explorer $database)
     {
     }
 
-    public function getAll(int $filterTasks = self::GET_ALL): Selection
+    public function getAll(TaskStatusFilter $filterTasks = TaskStatusFilter::All): Selection
     {
         $tasks = $this->database->table('tasks');
 
-        if ($filterTasks !== self::GET_ALL) {
+        if ($filterTasks !== TaskStatusFilter::All) {
             $tasks->where('isCompleted', $filterTasks);
         }
 

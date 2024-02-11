@@ -9,6 +9,7 @@ use App\Components\TasksTableControl;
 use App\Factories\TasksTableControlFactory;
 use App\Models\Task;
 use App\Models\TasksRepository;
+use App\Models\TaskStatusFilter;
 use App\Models\TasksTemplate;
 use App\Models\UploadsRepository;
 use Nette\Application\Responses\FileResponse;
@@ -42,11 +43,11 @@ final class HomePresenter extends Nette\Application\UI\Presenter
     public function renderDefault(): void
     {
         $this->template->tasks['active'] = $this->tasksRepository
-            ->getAll(TasksRepository::GET_ACTIVE)
+            ->getAll(TaskStatusFilter::Active)
             ->fetchAll();
 
         $this->template->tasks['completed'] = $this->tasksRepository
-            ->getAll(TasksRepository::GET_COMPLETED)
+            ->getAll(TaskStatusFilter::Completed)
             ->fetchAll();
     }
 
