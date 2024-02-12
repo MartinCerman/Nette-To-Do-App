@@ -12,7 +12,7 @@
     <tr n:foreach="$tasks as $task">
         <td>{$task->name}</td>
         <td>{$task->description|truncate: 30}</td>
-        <td>{$task->insertionDate|date:'j.n.Y G:i'}</td>
+        <td>{$task->insertionDate|date:'j. n. Y G:i'}</td>
         <td>
             {if $fileName = $control->getTaskFile($task->id)}
                 <a href="{link DownloadFile! $task->id}">{$fileName}</a>
