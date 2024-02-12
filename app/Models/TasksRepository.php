@@ -14,12 +14,18 @@ class TasksRepository
     {
     }
 
-    public function getAll(TaskStatusFilter $filterTasks = TaskStatusFilter::All): Selection
+    /**
+     * Reads tasks from database.
+     *
+     * @return Selection Returns all tasks if $status is not provided,
+     * otherwise returns tasks with provided $status.
+     */
+    public function getAll(?TaskStatus $status = null): Selection
     {
         $tasks = $this->database->table('tasks');
 
-        if ($filterTasks !== TaskStatusFilter::All) {
-            $tasks->where('isCompleted', $filterTasks);
+        if ($status !== null) {
+            $tasks->where('isCompleted', $status);
         }
 
         return $tasks;
