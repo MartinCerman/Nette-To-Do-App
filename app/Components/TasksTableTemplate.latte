@@ -11,16 +11,16 @@
     </thead>
     <tbody>
     <tr n:foreach="$tasks as $task">
-        <td>{$task->name}</td>
-        <td>{$task->description|truncate: 30}</td>
-        <td>{$task->insertionDate|date:'j. n. Y G:i'}</td>
+        <td>{$task->getName()}</td>
+        <td>{$task->getDescription()|truncate: 30}</td>
+        <td>{$task->getInsertionDate()|date:'j. n. Y G:i'}</td>
         <td>
-            {if $fileName = $control->getTaskFile($task->id)}
-                <a href="{link DownloadFile! $task->id}">{$fileName}</a>
+            {if $fileName = $control->getTaskFile($task->getId())}
+                <a href="{link DownloadFile! $task->getId()}">{$fileName}</a>
             {/if}
         </td>
         <td>
-            <a href="{plink Task: $task->id}">detail</a> / <a href="{plink Task:edit $task->id}">editovat</a>
+            <a href="{plink Task: $task->getId()}">detail</a> / <a href="{plink Task:edit $task->getId()}">editovat</a>
         </td>
     </tr>
     </tbody>

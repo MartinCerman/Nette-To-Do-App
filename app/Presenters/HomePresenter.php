@@ -43,12 +43,10 @@ final class HomePresenter extends Nette\Application\UI\Presenter
     public function renderDefault(): void
     {
         $this->template->tasks['active'] = $this->tasksRepository
-            ->getAll(TaskStatus::Active)
-            ->fetchAll();
+            ->getAll(TaskStatus::Active);
 
         $this->template->tasks['completed'] = $this->tasksRepository
-            ->getAll(TaskStatus::Completed)
-            ->fetchAll();
+            ->getAll(TaskStatus::Completed);
     }
 
     protected function createComponentInsertTaskForm(): Form
