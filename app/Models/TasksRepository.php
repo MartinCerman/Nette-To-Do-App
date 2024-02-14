@@ -4,22 +4,26 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Database\Entity\Task;
 use Doctrine\ORM\EntityManager;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Doctrine\DBAL\Connection;
+use Nettrine\ORM\EntityManagerDecorator;
 
 class TasksRepository
 {
-    public function __construct(private Explorer $database, private EntityManager $entityManager)
+    public function __construct(
+        private Explorer $database,
+        private EntityManagerDecorator $entityManager)
     {
     }
 
     /**
      * Reads tasks from database.
      *
-     * @return Selection Returns all tasks if $status is not provided,
+     * @return array Returns all tasks if $status is not provided,
      * otherwise returns tasks with provided $status.
      */
     public function getAll(?TaskStatus $status = null): array
@@ -44,26 +48,25 @@ class TasksRepository
         return $insertedRow->id;
     }
 
-    public function getById(int $taskId): \App\Models\Database\Entity\Task
+    public function getById(int $taskId): Task
     {
-        $repository = $this->entityManager->getRepository(\App\Models\Database\Entity\Task::class);
-
-        return $repository->find($taskId);
+        return $this->entityManager->find(Task::class, $taskId);
     }
 
-    public function updateTask(array $task): void
+    public function updateTask(array $taskData): void
     {
-        //TODO - change to Doctrine
+        $repository = $this->entityManager->getRepository(Task::class);
         $this->database->table('tasks')
-            ->get($task['id'])
-            ->update($task);
+            ->get($taskData['id'])
+            ?->update($taskData);
     }
 
     public function removeTask(int $taskId): void
     {
-        //TODO - change to Doctrine
-        $this->database->table('tasks')
-            ->get($taskId)
-            ->delete();
+        $task = $this->entityManager->find(Task::class, $taskId);
+        if($task){
+            $this->entityManager->remove($task);
+            $this->entityManager->flush();
+        }
     }
 }
