@@ -4,30 +4,31 @@ declare(strict_types=1);
 
 namespace App\Models\Database\Entity;
 
+use App\Models\Database\BaseEntity;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'tasks')]
-class Task
+class Task extends BaseEntity
 {
     #[ORM\Id]
     #[ORM\Column(name: 'id')]
     #[ORM\GeneratedValue]
-    private int $id;
+    protected int $id;
 
     #[ORM\Column(type: Types::TEXT)]
-    private string $name;
+    protected string $name;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description;
+    protected ?string $description;
 
     #[ORM\Column(name: 'isCompleted', type: Types::BOOLEAN)]
-    private bool $isCompleted;
+    protected bool $isCompleted;
 
     #[ORM\Column(name: 'insertionDate', type: Types::INTEGER)]
-    private int $insertionDate;
+    protected int $insertionDate;
 
     public function getId(): int
     {
@@ -67,5 +68,16 @@ class Task
     public function getInsertionDate(): DateTime
     {
         return (new DateTime())->setTimestamp($this->insertionDate);
+    }
+
+    public function toArray(): array
+    {
+        return [
+          'id' => $this->getId(),
+          'name' => $this->getName(),
+          'description' => $this->getDescription(),
+          'isCompleted' => $this->isCompleted(),
+          'insertionDate' => $this->getInsertionDate()
+        ];
     }
 }
