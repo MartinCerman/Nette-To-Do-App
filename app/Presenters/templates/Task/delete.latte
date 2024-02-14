@@ -1,9 +1,9 @@
-{templateType App\Models\TasksTemplate}
+{varType App\Models\Database\Entity\Task $task}
 {block title}
-    Smazat {$task->name}
+    Smazat {$task->getName()}
 {/block}
 {block content}
 
-<p>Opravdu smazat úlohu {$task->name}?</p>
+<p>Opravdu smazat úlohu {$task->getName()}?</p>
 {control deleteTaskForm}
-<a n:href="Task:edit $task->id">Zpět</a>
+<a n:href="Task:edit $task->getId()">Zpět</a>
