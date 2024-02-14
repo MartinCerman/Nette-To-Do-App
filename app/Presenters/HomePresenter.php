@@ -9,8 +9,10 @@ use App\Components\TasksTableControl;
 use App\Factories\TasksTableControlFactory;
 use App\Models\Task;
 use App\Models\TasksRepository;
+use App\Models\TaskStatus;
 use App\Models\TasksTemplate;
 use App\Models\UploadsRepository;
+use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
 use Nette;
 
@@ -28,18 +30,23 @@ final class HomePresenter extends Nette\Application\UI\Presenter
 
     public function createComponentTasksTable(): TasksTableControl
     {
-        return $this->tasksTableControlFactory->create();
+        $tasksTable = $this->tasksTableControlFactory->create();
+        $tasksTable->onFileDownload[] = $this->onTasksTableFileDownload(...);
+        return $tasksTable;
+    }
+
+    public function onTasksTableFileDownload(FileResponse $fileResponse): void
+    {
+        $this->sendResponse($fileResponse);
     }
 
     public function renderDefault(): void
     {
         $this->template->tasks['active'] = $this->tasksRepository
-            ->getAll(TasksRepository::GET_ACTIVE)
-            ->fetchAll();
+            ->getAll(TaskStatus::Active);
 
         $this->template->tasks['completed'] = $this->tasksRepository
-            ->getAll(TasksRepository::GET_COMPLETED)
-            ->fetchAll();
+            ->getAll(TaskStatus::Completed);
     }
 
     protected function createComponentInsertTaskForm(): Form

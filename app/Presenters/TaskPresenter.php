@@ -8,7 +8,6 @@ use App\Components\TaskForm;
 use App\Models\TasksRepository;
 use App\Models\TasksTemplate;
 use App\Models\UploadsRepository;
-use http\Exception\BadQueryStringException;
 use Nette\Application\Attributes\Parameter;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\BadRequestException;
@@ -74,13 +73,13 @@ class TaskPresenter extends Presenter
     public function renderEdit(int $taskId): void
     {
         $this->getComponent('editTaskForm')
-            ->setDefaults($this->template->task);
+            ->setDefaults($this->template->task->toArray());
     }
 
     public function renderDelete(int $taskId): void
     {
         $this->getComponent('deleteTaskForm')
-            ->setDefaults($this->template->task);
+            ->setDefaults($this->template->task->toArray());
     }
 
     public function createComponentEditTaskForm(): TaskForm
@@ -109,7 +108,7 @@ class TaskPresenter extends Presenter
             'id' => $this->taskId,
             'name' => $data->name,
             'description' => $data->description,
-            'isCompleted' => $data->isCompleted
+            'is_completed' => $data->isCompleted
         ];
 
         $this->tasksRepository->updateTask($task);
@@ -127,15 +126,11 @@ class TaskPresenter extends Presenter
      */
     public function deleteTaskFormSucceeded(Form $form, $task): void
     {
+
         $this->tasksRepository->removeTask((int)$task['id']);
         $this->uploadsRepository->deleteFolder($task['id']);
 
         $this->flashMessage('Úloha byla smazána.');
         $this->redirect('Home:');
-    }
-
-    public function actionDownloadAttachment(int $taskId){
-        $file = $this->uploadsRepository->findFile((string)$taskId);
-        $this->sendResponse(new FileResponse($file->getPathname()));
     }
 }

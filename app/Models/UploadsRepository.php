@@ -33,8 +33,17 @@ class UploadsRepository
         FileSystem::copy($file->temporaryFile, $taskFolder . DIRECTORY_SEPARATOR . $file->name);
     }
 
+    /**
+     * Removes $folder within default upload directory.
+     * @param string $folder Must not be empty and must contain alphanumeric
+     * characters only.
+     */
     public function deleteFolder(string $folder): void
     {
+        if(!ctype_alnum($folder)){
+            throw new \InvalidArgumentException(
+                "Error resolving path '$folder'.");
+        }
         FileSystem::delete($this->uploadsDir . DIRECTORY_SEPARATOR . $folder);
     }
 

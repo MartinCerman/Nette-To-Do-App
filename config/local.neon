@@ -1,4 +1,7 @@
 parameters:
+    nettrine.dbal.connection:
+        driver: 'pdo_sqlite'
+        path: '%appDir%/data/todolist.db'
 
 
 database:

@@ -19,7 +19,12 @@
 		"nette/utils": "^4.0",
 		"latte/latte": "^3.0",
 		"tracy/tracy": "^2.9",
-		"ext-http": "*"
+		"nettrine/orm": "^0.8.4",
+		"nettrine/dbal": "^0.8.2",
+		"nettrine/annotations": "^0.7.0",
+		"nettrine/cache": "^0.3.0",
+		"nettrine/migrations": "^0.9.1",
+		"nettrine/fixtures": "^0.7.2"
 	},
 	"require-dev": {
 		"nette/tester": "^2.4",

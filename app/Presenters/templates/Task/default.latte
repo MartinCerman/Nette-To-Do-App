@@ -1,28 +1,28 @@
 {templateType App\Models\TasksTemplate}
 {block title}
-    {$task->name}
+    {$task->getName()}
 {/block}
 {block content}
 <table>
     <tr>
         <td><b>Id:</b></td>
-        <td>{$task->id}</td>
+        <td>{$task->getId()}</td>
     </tr>
     <tr>
         <td><b>Název:</b></td>
-        <td>{$task->name}</td>
+        <td>{$task->getName()}</td>
     </tr>
     <tr>
         <td><b>Popis:</b></td>
-        <td>{$task->description}</td>
+        <td>{$task->getDescription()}</td>
     </tr>
     <tr>
         <td><b>Splněno:</b></td>
-        <td>{$task->isCompleted ? 'ANO' : 'NE'}</td>
+        <td>{$task->isCompleted() ? 'ANO' : 'NE'}</td>
     </tr>
     <tr>
         <td><b>Čas vložení:</b></td>
-        <td>{$task->insertionDate|date:'d.m.Y G:i'}</td>
+        <td>{$task->getInsertionDate()|date:'d.m.Y G:i'}</td>
     </tr>
 </table>
 <a n:href="Home:">Zpět</a>

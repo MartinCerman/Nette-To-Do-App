@@ -4,29 +4,37 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Database\Entity\Task;
+use Doctrine\ORM\EntityManager;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
+use Doctrine\DBAL\Connection;
+use Nettrine\ORM\EntityManagerDecorator;
 
 class TasksRepository
 {
-    public const GET_ACTIVE = 0;
-    public const GET_COMPLETED = 1;
-    public const GET_ALL = 2;
-
-    public function __construct(private Explorer $database)
+    public function __construct(
+        private Explorer $database,
+        private EntityManagerDecorator $entityManager)
     {
     }
 
-    public function getAll(int $filterTasks = self::GET_ALL): Selection
+    /**
+     * Reads tasks from database.
+     *
+     * @return array Returns all tasks if $status is not provided,
+     * otherwise returns tasks with provided $status.
+     */
+    public function getAll(?TaskStatus $status = null): array
     {
-        $tasks = $this->database->table('tasks');
+        $repository = $this->entityManager->getRepository(\App\Models\Database\Entity\Task::class);
 
-        if ($filterTasks !== self::GET_ALL) {
-            $tasks->where('isCompleted', $filterTasks);
+        if ($status !== null) {
+            return $repository->findBy(['isCompleted' => $status->value]);
         }
 
-        return $tasks;
+        return $repository->findAll();
     }
 
     public function addTask($name, $description): int
@@ -40,23 +48,25 @@ class TasksRepository
         return $insertedRow->id;
     }
 
-    public function getById(int $taskId): ?ActiveRow
+    public function getById(int $taskId): Task
     {
-        return $this->database->table('tasks')
-            ->get($taskId);
+        return $this->entityManager->find(Task::class, $taskId);
     }
 
-    public function updateTask(array $task): void
+    public function updateTask(array $taskData): void
     {
+        $repository = $this->entityManager->getRepository(Task::class);
         $this->database->table('tasks')
-            ->get($task['id'])
-            ->update($task);
+            ->get($taskData['id'])
+            ?->update($taskData);
     }
 
     public function removeTask(int $taskId): void
     {
-        $this->database->table('tasks')
-            ->get($taskId)
-            ->delete();
+        $task = $this->entityManager->find(Task::class, $taskId);
+        if($task){
+            $this->entityManager->remove($task);
+            $this->entityManager->flush();
+        }
     }
 }

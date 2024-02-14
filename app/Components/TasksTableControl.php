@@ -6,11 +6,15 @@ namespace App\Components;
 
 use App\Models\TasksTemplate;
 use App\Models\UploadsRepository;
+use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Control;
 
 /** @property-read TasksTemplate $template */
 class TasksTableControl extends Control
 {
+    /** @var callable(FileResponse): void */
+    public $onFileDownload;
+
     public function __construct(private UploadsRepository $uploadsRepository)
     {
     }
@@ -30,5 +34,10 @@ class TasksTableControl extends Control
         }
 
         return null;
+    }
+
+    public function handleDownloadFile(int $taskId){
+        $file = $this->uploadsRepository->findFile((string)$taskId);
+        $this->onFileDownload(new FileResponse($file->getPathname()));
     }
 }
