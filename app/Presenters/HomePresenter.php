@@ -65,6 +65,8 @@ final class HomePresenter extends Nette\Application\UI\Presenter
             $this->uploadsRepository->addFile((string)$taskId, $data->upload);
         }
 
+        $this->flashMessage("Uloha přidána s id $taskId.");
+
         $this->redirect('Home:');
     }
 }
