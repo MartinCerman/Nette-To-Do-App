@@ -4,19 +4,13 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use App\Components\TaskForm;
+use App\Components\TaskForm\TaskForm;
 use App\Models\TasksRepository;
 use App\Models\TasksTemplate;
 use App\Models\UploadsRepository;
-use Nette\Application\Attributes\Parameter;
 use Nette\Application\Attributes\Persistent;
-use Nette\Application\BadRequestException;
-use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
-use Nette\Database\Table\ActiveRow;
-use Tracy\Debugger;
-use Tracy\OutputDebugger;
 
 /**
  *  TaskPresenter allows CRUD requests for a single task.
@@ -104,20 +98,19 @@ class TaskPresenter extends Presenter
 
     public function editTaskFormSucceeded(Form $form, $data): void
     {
-        $task = [
-            'id' => $this->taskId,
+        $taskData = [
             'name' => $data->name,
             'description' => $data->description,
-            'is_completed' => $data->isCompleted
+            'isCompleted' => $data->isCompleted
         ];
 
-        $this->tasksRepository->updateTask($task);
+        $this->tasksRepository->updateTask($this->taskId, $taskData);
 
         if ($data->upload->hasFile()) {
             $this->uploadsRepository->addFile((string)$this->taskId, $data->upload);
         }
 
-        $this->flashMessage("Úloha s názvem {$task['name']} byla upravena.");
+        $this->flashMessage("Úloha s názvem {$data->name} byla upravena.");
         $this->redirect('Home:');
     }
 
