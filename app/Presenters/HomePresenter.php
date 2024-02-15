@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use App\Components\TaskForm;
-use App\Components\TasksTableControl;
+use App\Components\TaskForm\TaskForm;
+use App\Components\TasksTable\TasksTableControl;
 use App\Factories\TasksTableControlFactory;
-use App\Models\Task;
 use App\Models\TasksRepository;
 use App\Models\TaskStatus;
 use App\Models\TasksTemplate;
