@@ -30,6 +30,12 @@ class Task extends BaseEntity
     #[ORM\Column(name: 'insertionDate', type: Types::INTEGER)]
     protected int $insertionDate;
 
+    public function __construct()
+    {
+        $this->isCompleted = false;
+        $this->insertionDate = time();
+    }
+
     public function getId(): int
     {
         return $this->id;
