@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Components;
+namespace App\Components\TaskForm;
 
-use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Forms;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Components;
+namespace App\Components\TasksTable;
 
 use App\Models\TasksTemplate;
 use App\Models\UploadsRepository;
@@ -22,7 +22,7 @@ class TasksTableControl extends Control
     public function render(array $tasks): void
     {
         $this->template->tasks = $tasks;
-        $this->template->render(__DIR__ . '/TasksTableTemplate.latte');
+        $this->template->render(__DIR__ . '/templates/TasksTable.latte');
     }
 
     public function getTaskFile($taskId) : ?string
