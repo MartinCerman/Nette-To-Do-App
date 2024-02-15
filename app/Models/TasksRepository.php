@@ -55,7 +55,6 @@ class TasksRepository
 
     public function updateTask(array $taskData): void
     {
-        $repository = $this->entityManager->getRepository(Task::class);
         $this->database->table('tasks')
             ->get($taskData['id'])
             ?->update($taskData);
