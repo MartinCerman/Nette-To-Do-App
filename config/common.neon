@@ -1,11 +1,3 @@
-parameters:
-    nettrine.dbal:
-        debug:
-            panel: %debugMode%
-        connection:
-            driver: 'pdo_sqlite'
-            path: '%appDir%/data/todolist.db'
-
 application:
 	errorPresenter: Error
 	mapping:
@@ -26,12 +18,6 @@ di:
 		tags: no
 
 
-#extensions:
-#    nettrine.annotations: Nettrine\Annotations\DI\AnnotationsExtension
-#    doctrine.cache: Nettrine\Cache\DI\CacheExtension
-#    nettrine.dbal: Nettrine\DBAL\DI\DbalExtension
-#    nettrine.orm: Nettrine\ORM\DI\OrmExtension
-#    nettrine.orm.annotations: Nettrine\ORM\DI\OrmAnnotationsExtension
 extensions:
   # Common
   nettrine.cache: Nettrine\Cache\DI\CacheExtension
@@ -47,14 +33,3 @@ extensions:
   nettrine.orm.cache: Nettrine\ORM\DI\OrmCacheExtension
   nettrine.orm.console: Nettrine\ORM\DI\OrmConsoleExtension
   nettrine.orm.attributes: Nettrine\ORM\DI\OrmAttributesExtension
-
-
-nettrine.dbal:
-    connection:
-        driver: 'pdo_sqlite'
-        path: '%appDir%/data/todolist.db'
-
-
-nettrine.orm.attributes:
-    mapping:
-        App\Models\Database\Entity: %appDir%/Models/Database/Entity

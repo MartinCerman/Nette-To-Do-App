@@ -1,0 +1,11 @@
+nettrine.dbal:
+    debug:
+        panel: %debugMode%
+    connection:
+        driver: 'pdo_sqlite'
+        path: '%appDir%/data/todolist.db'
+
+
+nettrine.orm.attributes:
+    mapping:
+        App\Models\Database\Entity: %appDir%/Models/Database/Entity
