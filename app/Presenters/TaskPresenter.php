@@ -11,6 +11,7 @@ use App\Models\UploadsRepository;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
+use Nette\Utils\ArrayHash;
 
 /**
  *  TaskPresenter allows CRUD requests for a single task.
@@ -70,10 +71,16 @@ class TaskPresenter extends Presenter
             ->setDefaults($this->template->task->toArray());
     }
 
-    public function renderDelete(int $taskId): void
+    /**
+     * Removes a task and its associated folder.
+     */
+    public function handleDelete(): void
     {
-        $this->getComponent('deleteTaskForm')
-            ->setDefaults($this->template->task->toArray());
+        $this->tasksRepository->removeTask($this->taskId);
+        $this->uploadsRepository->deleteFolder((string)$this->taskId);
+
+        $this->flashMessage('Úloha byla smazána.');
+        $this->redirect('Home:');
     }
 
     public function createComponentEditTaskForm(): TaskForm
@@ -84,19 +91,7 @@ class TaskPresenter extends Presenter
         return $form;
     }
 
-    public function createComponentDeleteTaskForm(): Form
-    {
-        $form = new Form();
-
-        $form->addHidden('id');
-        $form->addSubmit('submit', 'Smazat');
-
-        $form->onSuccess[] = $this->deleteTaskFormSucceeded(...);
-
-        return $form;
-    }
-
-    public function editTaskFormSucceeded(Form $form, $data): void
+    public function editTaskFormSucceeded(ArrayHash $data): void
     {
         $taskData = [
             'name' => $data->name,
@@ -111,19 +106,6 @@ class TaskPresenter extends Presenter
         }
 
         $this->flashMessage("Úloha s názvem {$data->name} byla upravena.");
-        $this->redirect('Home:');
-    }
-
-    /**
-     * Removes a task and its associated folder.
-     */
-    public function deleteTaskFormSucceeded(Form $form, $task): void
-    {
-
-        $this->tasksRepository->removeTask((int)$task['id']);
-        $this->uploadsRepository->deleteFolder($task['id']);
-
-        $this->flashMessage('Úloha byla smazána.');
         $this->redirect('Home:');
     }
 }
