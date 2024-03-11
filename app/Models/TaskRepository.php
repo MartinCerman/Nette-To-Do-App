@@ -13,35 +13,35 @@ use Doctrine\DBAL\Connection;
 use Nette\Utils\ArrayHash;
 use Nettrine\ORM\EntityManagerDecorator;
 
-class TasksRepository
+class TaskRepository
 {
     public function __construct(
-        private EntityManagerDecorator $entityManager)
+        private EntityManagerDecorator $entityManager,
+        private UserRepository $userRepository
+    )
     {
     }
 
-    /**
-     * Reads tasks from database.
-     *
-     * @return array Returns all tasks if $status is not provided,
-     * otherwise returns tasks with provided $status.
-     */
-    public function getAll(?TaskStatus $status = null): array
+    public function getTasks(?TaskStatus $status, int $userId): array
     {
         $repository = $this->entityManager->getRepository(\App\Models\Database\Entity\Task::class);
 
         if ($status !== null) {
-            return $repository->findBy(['isCompleted' => $status->value]);
+            return $repository->findBy(['isCompleted' => $status->value, 'user' => $userId]);
         }
 
         return $repository->findAll();
     }
 
-    public function addTask($name, $description): int
+    public function addTask(string $name, string $description, int $userId): int
     {
         $task = new Task();
         $task->setName($name);
         $task->setDescription($description);
+
+        $user = $this->userRepository->findOneBy(['id' => $userId]);
+
+        $task->setUser($user);
 
         $this->entityManager->persist($task);
 

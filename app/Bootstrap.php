@@ -14,8 +14,8 @@ class Bootstrap
         $configurator = new Configurator;
 		$appDir = dirname(__DIR__);
 
-		//$configurator->setDebugMode(false);
-		$configurator->enableTracy($appDir . '/log');
+		$configurator->setDebugMode(true);
+		$configurator->enableTracy($appDir . '/log', );
 
 		$configurator->setTempDirectory($appDir . '/temp');
 

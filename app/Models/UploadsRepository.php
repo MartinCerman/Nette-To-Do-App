@@ -34,17 +34,17 @@ class UploadsRepository
     }
 
     /**
-     * Removes $folder within default upload directory.
+     * Removes $folder within user's uploads directory .
      * @param string $folder Must not be empty and must contain alphanumeric
      * characters only.
      */
-    public function deleteFolder(string $folder): void
+    public function deleteFolder(string $folder, int $userId): void
     {
         if(!ctype_alnum($folder)){
             throw new \InvalidArgumentException(
                 "Error resolving path '$folder'.");
         }
-        FileSystem::delete($this->uploadsDir . DIRECTORY_SEPARATOR . $folder);
+        FileSystem::delete($this->uploadsDir . DIRECTORY_SEPARATOR . $userId . DIRECTORY_SEPARATOR . $folder);
     }
 
     /**

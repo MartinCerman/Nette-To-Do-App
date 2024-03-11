@@ -10,11 +10,10 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'tasks')]
 class Task extends BaseEntity
 {
     #[ORM\Id]
-    #[ORM\Column(name: 'id')]
+    #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue]
     protected int $id;
 
@@ -24,11 +23,15 @@ class Task extends BaseEntity
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     protected ?string $description;
 
-    #[ORM\Column(name: 'isCompleted', type: Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $isCompleted;
 
-    #[ORM\Column(name: 'insertionDate', type: Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     protected int $insertionDate;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(referencedColumnName: 'id', onDelete: 'CASCADE')]
+    protected ?User $user = null;
 
     public function __construct()
     {
@@ -76,14 +79,25 @@ class Task extends BaseEntity
         return (new DateTime())->setTimestamp($this->insertionDate);
     }
 
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
+    }
+
     public function toArray(): array
     {
         return [
-          'id' => $this->getId(),
-          'name' => $this->getName(),
-          'description' => $this->getDescription(),
-          'isCompleted' => $this->isCompleted(),
-          'insertionDate' => $this->getInsertionDate()
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'description' => $this->getDescription(),
+            'isCompleted' => $this->isCompleted(),
+            'insertionDate' => $this->getInsertionDate(),
+            'user' => $this->getUser()
         ];
     }
 }

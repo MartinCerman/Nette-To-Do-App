@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App\Components\TaskForm\TaskForm;
-use App\Models\TasksRepository;
-use App\Models\TasksTemplate;
+use App\Models\TaskRepository;
+use App\Models\TaskTemplate;
 use App\Models\UploadsRepository;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Form;
@@ -19,7 +19,7 @@ use Nette\Utils\ArrayHash;
  *  Task is represented by its $taskId (int) passed in query string, if it's not
  *  provided, not found or in an incorrect format, an exception is thrown.
  *
- * @property-read TasksTemplate $template
+ * @property-read TaskTemplate $template
  */
 class TaskPresenter extends Presenter
 {
@@ -27,11 +27,18 @@ class TaskPresenter extends Presenter
     public int $taskId;
 
     public function __construct(
-        private TasksRepository   $tasksRepository,
+        private TaskRepository    $tasksRepository,
         private UploadsRepository $uploadsRepository,
     )
     {
         parent::__construct();
+    }
+
+    public function beforeRender()
+    {
+       if(!$this->getUser()->isLoggedIn()){
+           $this->redirect('Home:in');
+       }
     }
 
     public function loadState(array $params): void
@@ -57,6 +64,10 @@ class TaskPresenter extends Presenter
             return false;
         }
 
+        if($task->getUser()?->getId() !== $this->user->getId()){
+            return false;
+        }
+
         $this->template->task = $task;
         return true;
     }
@@ -77,7 +88,8 @@ class TaskPresenter extends Presenter
     public function handleDelete(): void
     {
         $this->tasksRepository->removeTask($this->taskId);
-        $this->uploadsRepository->deleteFolder((string)$this->taskId);
+
+        $this->uploadsRepository->deleteFolder((string)$this->taskId, $this->user->getId());
 
         $this->flashMessage('Úloha byla smazána.');
         $this->redirect('Home:');
@@ -101,8 +113,10 @@ class TaskPresenter extends Presenter
 
         $this->tasksRepository->updateTask($this->taskId, $taskData);
 
+
         if ($data->upload->hasFile()) {
-            $this->uploadsRepository->addFile((string)$this->taskId, $data->upload);
+            $userFolder = $this->user->getId() . '/' . $this->taskId;
+            $this->uploadsRepository->addFile($userFolder, $data->upload);
         }
 
         $this->flashMessage("Úloha s názvem {$data->name} byla upravena.");

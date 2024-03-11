@@ -6,6 +6,7 @@ services:
     - App\Router\RouterFactory::createRouter
     - App\Models\UploadsRepository(uploadsDir: %uploadsDir%)
     - App\Factories\TasksTableControlFactory
+    - App\Models\Authenticator
 
 search:
     in: %appDir%
