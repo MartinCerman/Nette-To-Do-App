@@ -4,7 +4,7 @@ namespace App\Models;
 use App\Models\Database\Entity\Task;
 use Nette\Bridges\ApplicationLatte\Template;
 
-class TasksTemplate extends Template
+class TaskTemplate extends Template
 {
     public Task $task;
 

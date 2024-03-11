@@ -16,6 +16,7 @@ final class RouterFactory
     public static function createRouter(): RouteList
     {
         $router = new RouteList;
+        $router->addRoute('prihlaseni', 'Home:in');
         $router->addRoute('<presenter>[/<taskId \d+>[/<action>]]', [
                 'presenter' => [
                     Route::Value => 'Home',

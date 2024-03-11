@@ -6,11 +6,11 @@ services:
     - App\Router\RouterFactory::createRouter
     - App\Models\UploadsRepository(uploadsDir: %uploadsDir%)
     - App\Factories\TasksTableControlFactory
-    - Doctrine\ORM\EntityManager
+    - App\Models\Authenticator
 
 search:
-	-	in: %appDir%
-		classes:
-			- *Factory
-			- *Facade
-			- *Repository
+    in: %appDir%
+    classes:
+        - *Factory
+        - *Facade
+        - *Repository

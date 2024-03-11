@@ -4,19 +4,14 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use App\Components\TaskForm;
-use App\Models\TasksRepository;
-use App\Models\TasksTemplate;
+use App\Components\TaskForm\TaskForm;
+use App\Models\TaskRepository;
+use App\Models\TaskTemplate;
 use App\Models\UploadsRepository;
-use Nette\Application\Attributes\Parameter;
 use Nette\Application\Attributes\Persistent;
-use Nette\Application\BadRequestException;
-use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
-use Nette\Database\Table\ActiveRow;
-use Tracy\Debugger;
-use Tracy\OutputDebugger;
+use Nette\Utils\ArrayHash;
 
 /**
  *  TaskPresenter allows CRUD requests for a single task.
@@ -24,7 +19,7 @@ use Tracy\OutputDebugger;
  *  Task is represented by its $taskId (int) passed in query string, if it's not
  *  provided, not found or in an incorrect format, an exception is thrown.
  *
- * @property-read TasksTemplate $template
+ * @property-read TaskTemplate $template
  */
 class TaskPresenter extends Presenter
 {
@@ -32,11 +27,18 @@ class TaskPresenter extends Presenter
     public int $taskId;
 
     public function __construct(
-        private TasksRepository   $tasksRepository,
+        private TaskRepository    $tasksRepository,
         private UploadsRepository $uploadsRepository,
     )
     {
         parent::__construct();
+    }
+
+    public function beforeRender()
+    {
+       if(!$this->getUser()->isLoggedIn()){
+           $this->redirect('Home:in');
+       }
     }
 
     public function loadState(array $params): void
@@ -62,6 +64,10 @@ class TaskPresenter extends Presenter
             return false;
         }
 
+        if($task->getUser()?->getId() !== $this->user->getId()){
+            return false;
+        }
+
         $this->template->task = $task;
         return true;
     }
@@ -76,10 +82,17 @@ class TaskPresenter extends Presenter
             ->setDefaults($this->template->task->toArray());
     }
 
-    public function renderDelete(int $taskId): void
+    /**
+     * Removes a task and its associated folder.
+     */
+    public function handleDelete(): void
     {
-        $this->getComponent('deleteTaskForm')
-            ->setDefaults($this->template->task->toArray());
+        $this->tasksRepository->removeTask($this->taskId);
+
+        $this->uploadsRepository->deleteFolder((string)$this->taskId, $this->user->getId());
+
+        $this->flashMessage('Úloha byla smazána.');
+        $this->redirect('Home:');
     }
 
     public function createComponentEditTaskForm(): TaskForm
@@ -90,47 +103,23 @@ class TaskPresenter extends Presenter
         return $form;
     }
 
-    public function createComponentDeleteTaskForm(): Form
+    public function editTaskFormSucceeded(ArrayHash $data): void
     {
-        $form = new Form();
-
-        $form->addHidden('id');
-        $form->addSubmit('submit', 'Smazat');
-
-        $form->onSuccess[] = $this->deleteTaskFormSucceeded(...);
-
-        return $form;
-    }
-
-    public function editTaskFormSucceeded(Form $form, $data): void
-    {
-        $task = [
-            'id' => $this->taskId,
+        $taskData = [
             'name' => $data->name,
             'description' => $data->description,
-            'is_completed' => $data->isCompleted
+            'isCompleted' => $data->isCompleted
         ];
 
-        $this->tasksRepository->updateTask($task);
+        $this->tasksRepository->updateTask($this->taskId, $taskData);
+
 
         if ($data->upload->hasFile()) {
-            $this->uploadsRepository->addFile((string)$this->taskId, $data->upload);
+            $userFolder = $this->user->getId() . '/' . $this->taskId;
+            $this->uploadsRepository->addFile($userFolder, $data->upload);
         }
 
-        $this->flashMessage("Úloha s názvem {$task['name']} byla upravena.");
-        $this->redirect('Home:');
-    }
-
-    /**
-     * Removes a task and its associated folder.
-     */
-    public function deleteTaskFormSucceeded(Form $form, $task): void
-    {
-
-        $this->tasksRepository->removeTask((int)$task['id']);
-        $this->uploadsRepository->deleteFolder($task['id']);
-
-        $this->flashMessage('Úloha byla smazána.');
+        $this->flashMessage("Úloha s názvem {$data->name} byla upravena.");
         $this->redirect('Home:');
     }
 }

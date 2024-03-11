@@ -14,8 +14,8 @@ class Bootstrap
         $configurator = new Configurator;
 		$appDir = dirname(__DIR__);
 
-		//$configurator->setDebugMode(false);
-		$configurator->enableTracy($appDir . '/log');
+		$configurator->setDebugMode(true);
+		$configurator->enableTracy($appDir . '/log', );
 
 		$configurator->setTempDirectory($appDir . '/temp');
 
@@ -25,7 +25,7 @@ class Bootstrap
 
 		$configurator->addConfig($appDir . '/config/common.neon');
 		$configurator->addConfig($appDir . '/config/services.neon');
-		$configurator->addConfig($appDir . '/config/local.neon');
+		$configurator->addConfig($appDir . '/config/nettrine.neon');
 
 		return $configurator;
 	}
